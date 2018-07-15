@@ -1,55 +1,41 @@
+#include <utility>
 #include <vector>
 #include <thread>
 #include <future>
-
+#include <memory>
 using std::vector;
 
-class Multiplier {
+typedef vector<double> v_d;
+typedef vector<v_d> vv_d;
+
+
+
+class Matrix {
 public:
-    vector<vector<double>> matrix;
-    bool transposed;
+    explicit Matrix(vv_d input) : _matrix(std::move(input)), _transposed(false) {};
+    Matrix() : _matrix(vv_d(0, v_d(0))), _transposed(false) {};
 
-    Multiplier(const vector<vector<double>> &input) : matrix(input), transposed(false) {};
-
-    void Transpose() {
-        vector<vector<double>> transposedMatrix(matrix.size(), vector<double>(matrix[0].size()));
-        for (int i = 0; i < matrix.size(); i++) {
-            for (int j = 0; j < matrix[0].size(); j++) {
-                transposedMatrix[i][j] = matrix[j][i];
-            }
-        }
-        matrix = transposedMatrix;
-        transposed = !transposed;
-    }
-
-    void RawsMultiply(int firstRaw, int lastRaw, const vector<vector<double>> &other, vector<vector<double>> &result) {
-        for (int i = firstRaw; i < lastRaw; i++) {
-            for (int j = 0; j < result[i].size(); j++) {
-                for (int r = 0; r < matrix[0].size(); r++) {
-                    if (!transposed) {
-                        result[i][j] += matrix[i][r] * other[r][j];
-                    }
-                    else {
-                        result[i][j] += matrix[r][i] * other[r][j];
-                    }
-                }
-            }
-        }
-    }
-    vector<vector<double>> Multiply(const Multiplier &other, unsigned threadsCount) {
-        vector<vector<double>> result(matrix.size(), vector<double>(other.matrix[0].size()));
-        vector<std::future<void>> futures(threadsCount);
-        unsigned size_of_part = matrix.size() / threadsCount;
-        for (int i = 0; i < threadsCount; i++) {
-            int from = size_of_part * i;
-            int to = size_of_part * (i + 1);
-            to += (i == threadsCount - 1) ? matrix.size() % threadsCount : 0;
-            futures[i] = std::async(&Multiplier::RawsMultiply, this, from, to, other.matrix, std::ref(result));
-        }
-        for (int i = 0; i < futures.size(); i++) {
-            futures[i].get();
-        }
-        return result;
-    }
+    vv_d get_matrix() const { return _matrix; }
+    bool is_transposed() const { return _transposed; }
+    void transpose();
+private:
+    vv_d _matrix;
+    bool _transposed;
 };
+
+class MultiplyServise {
+public:
+    MultiplyServise(std::shared_ptr<Matrix> first_matrix, std::shared_ptr<Matrix> second_matrix, bool first_transposed = false)
+            : _first_matrix(std::move(first_matrix)), _second_matrix(std::move(second_matrix)) {}
+
+    void raws_multiply(int firstRaw, int lastRaw, vv_d &result, bool first_transposed = false) const;
+    vv_d multiply(unsigned threadsCount = 1) const;
+    std::shared_ptr<Matrix> get_first_matrix() const { return _first_matrix; }
+    std::shared_ptr<Matrix> get_second_matrix() const { return _second_matrix; }
+
+private:
+    std::shared_ptr<Matrix> _first_matrix, _second_matrix;
+};
+
+
 
