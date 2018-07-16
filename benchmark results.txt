@@ -1,3 +1,29 @@
+UPDATED
+1 thread                                   1000     1087000 ns/op
+1 thread, with transpose                   1000     1061001 ns/op
+2 threads                                  2000      660000 ns/op
+2 threads, with transpose                  2000      681500 ns/op
+3 threads                                  2000      592500 ns/op
+3 threads, with transpose                  2000      581001 ns/op
+4 threads                                  2000      605500 ns/op
+4 threads, with transpose                  2000      554998 ns/op
+5 threads                                  2000      685000 ns/op
+5 threads, with transpose                  2000      667500 ns/op
+6 threads                                  2000      685000 ns/op
+6 threads, with transpose                  2000      731498 ns/op
+7 threads                                  2000      738999 ns/op
+7 threads, with transpose                  2000      741500 ns/op
+8 threads                                  2000      699500 ns/op
+8 threads, with transpose                  2000      686500 ns/op
+9 threads                                  2000      767499 ns/op
+9 threads, with transpose                  2000      756500 ns/op
+10 threads                                 2000      743000 ns/op
+10 threads, with transpose                 2000      838499 ns/op
+=================================================================
+Best
+4 threads, with transpose                  2000      554998 ns/op
+
+LAST VERSION
 1 thread                                   1000     1725001 ns/op
 1 thread, with transpose                   1000     1907001 ns/op
 2 threads                                  2000      824999 ns/op
@@ -23,5 +49,5 @@
 12 threads                                 2000      961500 ns/op
 12 threads, with transpose                 2000      925500 ns/op
 =================================================================
-Best 
+Best
 4 threads, with transpose                  2000      580001 ns/op

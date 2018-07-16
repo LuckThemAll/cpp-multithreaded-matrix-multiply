@@ -21,15 +21,13 @@ vv_d MultiplyServise::multiply(unsigned threadsCount) const{
 }
 
 void MultiplyServise::raws_multiply(int firstRaw, int lastRaw, vector<vector<double>> &result, bool first_tranposed) const{
+    auto first = _first_matrix->get_matrix();
+    auto second = _second_matrix->get_matrix();
+    auto size = first[0].size();
     for (int i = firstRaw; i < lastRaw; i++) {
         for (int j = 0; j < result[i].size(); j++) {
-            for (int r = 0; r < _first_matrix->get_matrix()[0].size(); r++) {
-                if (!first_tranposed) {
-                    result[i][j] += _first_matrix->get_matrix()[i][r] * _second_matrix->get_matrix()[r][j];
-                }
-                else {
-                    result[i][j] += _first_matrix->get_matrix()[r][i] * _second_matrix->get_matrix()[r][j];
-                }
+            for (int r = 0; r < size; r++) {
+                result[i][j] += first[first_tranposed ? r : i][first_tranposed ? i : r] * second[r][j];
             }
         }
     }
